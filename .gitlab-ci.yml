@@ -1,11 +1,13 @@
 variables:
   GRAFANA_VERSION: "11.4"
-  PLUGINS_DIR: "grafana-plugins"
+  DATE_SUFFIX: ${CI_PIPELINE_CREATED_AT}
+  PLUGINS_DIR: "grafana-plugins-${CI_PIPELINE_CREATED_AT}"
   GRAFANA_API_URL: "https://grafana.com/api/plugins"
 
 stages:
   - discover
   - download
+  - calculate_size
   - commit
 
 discover_plugins:
@@ -27,19 +29,56 @@ download_plugins:
   image: python:3.11-slim
   script:
     - apt-get update && apt-get install -y curl zip
-    - mkdir -p $PLUGINS_DIR
+    - |
+      # Format date as YYYY-MM-DD
+      FORMATTED_DATE=$(date +%Y-%m-%d)
+      PLUGINS_DIR="grafana-plugins-${FORMATTED_DATE}"
+      echo "Creating directory: $PLUGINS_DIR"
+      mkdir -p $PLUGINS_DIR
     - |
       while IFS= read -r plugin; do
         echo "Downloading plugin: $plugin"
         plugin_url="$GRAFANA_API_URL/$plugin/versions/latest/download"
         curl -L -o "$PLUGINS_DIR/$plugin.zip" "$plugin_url" || echo "Failed to download $plugin"
       done < plugins.txt
+    - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
   artifacts:
     paths:
-      - $PLUGINS_DIR/
+      - grafana-plugins-*
+      - variables.env
     expire_in: 1 day
   needs:
     - discover_plugins
+
+calculate_size:
+  stage: calculate_size
+  image: alpine:latest
+  script:
+    - source variables.env
+    - |
+      echo "Calculating total size of downloaded plugins..."
+      total_size_bytes=$(du -sb $PLUGINS_DIR | cut -f1)
+      total_size_mb=$(echo "scale=2; $total_size_bytes/1024/1024" | bc)
+      echo "Total size of all plugins: ${total_size_mb}MB (${total_size_bytes} bytes)"
+      echo "$total_size_bytes" > total_size.txt
+      echo "Size breakdown by plugin:"
+      cd $PLUGINS_DIR
+      for plugin in *.zip; do
+        if [ -f "$plugin" ]; then
+          size=$(du -sh "$plugin" | cut -f1)
+          echo "- $plugin: $size"
+        fi
+      done
+  artifacts:
+    paths:
+      - grafana-plugins-*
+      - total_size.txt
+      - variables.env
+    reports:
+      metrics: total_size.txt
+    expire_in: 1 day
+  needs:
+    - download_plugins
 
 commit_plugins:
   stage: commit
@@ -49,13 +88,15 @@ commit_plugins:
     - git config --global user.email "pipeline@example.com"
     - git config --global user.name "GitLab Pipeline"
   script:
+    - source variables.env
     - |
       if [ -n "$(git status --porcelain)" ]; then
-        git add $PLUGINS_DIR/
-        git commit -m "Update Grafana plugins [skip ci]"
+        total_size_mb=$(cat total_size.txt | awk '{printf "%.2f", $1/1024/1024}')
+        git add grafana-plugins-*
+        git commit -m "Update Grafana plugins (${PLUGINS_DIR}) - Total size: ${total_size_mb}MB [skip ci]"
         git push origin HEAD:$CI_COMMIT_REF_NAME
       else
         echo "No changes to commit"
       fi
   needs:
-    - download_plugins
+    - calculate_size
