@@ -1,7 +1,6 @@
 variables:
   GRAFANA_VERSION: "11.4"
   DATE_SUFFIX: ${CI_PIPELINE_CREATED_AT}
-  PLUGINS_DIR: "grafana-plugins-${CI_PIPELINE_CREATED_AT}"
   GRAFANA_API_URL: "https://grafana.com/api/plugins"
 
 stages:
@@ -16,9 +15,10 @@ discover_plugins:
   script:
     - apt-get update && apt-get install -y curl jq
     - |
-      curl -s "$GRAFANA_API_URL" | jq -r '.items[] | .slug' > plugins.txt
+      # Get plugins and filter for those that have Linux AMD64 support
+      curl -s "$GRAFANA_API_URL" | jq -r '.items[] | select(.versions[].arch | contains("amd64") and contains("linux")) | .slug' > plugins.txt
     - |
-      echo "Found $(wc -l < plugins.txt) plugins"
+      echo "Found $(wc -l < plugins.txt) Linux AMD64 compatible plugins"
   artifacts:
     paths:
       - plugins.txt
@@ -38,8 +38,16 @@ download_plugins:
     - |
       while IFS= read -r plugin; do
         echo "Downloading plugin: $plugin"
-        plugin_url="$GRAFANA_API_URL/$plugin/versions/latest/download"
-        curl -L -o "$PLUGINS_DIR/$plugin.zip" "$plugin_url" || echo "Failed to download $plugin"
+        # Get the latest version info for Linux AMD64
+        version_info=$(curl -s "$GRAFANA_API_URL/$plugin" | jq -r '.versions[0] | select(.arch | contains("amd64") and contains("linux"))')
+        if [ ! -z "$version_info" ]; then
+          version=$(echo "$version_info" | jq -r '.version')
+          echo "Latest Linux AMD64 version: $version"
+          download_url="$GRAFANA_API_URL/$plugin/versions/$version/download?os=linux&arch=amd64"
+          curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
+        else
+          echo "Skipping $plugin - No Linux AMD64 version available"
+        fi
       done < plugins.txt
     - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
   artifacts:
@@ -59,7 +67,7 @@ calculate_size:
       echo "Calculating total size of downloaded plugins..."
       total_size_bytes=$(du -sb $PLUGINS_DIR | cut -f1)
       total_size_mb=$(echo "scale=2; $total_size_bytes/1024/1024" | bc)
-      echo "Total size of all plugins: ${total_size_mb}MB (${total_size_bytes} bytes)"
+      echo "Total size of all Linux AMD64 plugins: ${total_size_mb}MB (${total_size_bytes} bytes)"
       echo "$total_size_bytes" > total_size.txt
       echo "Size breakdown by plugin:"
       cd $PLUGINS_DIR
@@ -93,7 +101,7 @@ commit_plugins:
       if [ -n "$(git status --porcelain)" ]; then
         total_size_mb=$(cat total_size.txt | awk '{printf "%.2f", $1/1024/1024}')
         git add grafana-plugins-*
-        git commit -m "Update Grafana plugins (${PLUGINS_DIR}) - Total size: ${total_size_mb}MB [skip ci]"
+        git commit -m "Update Grafana plugins (${PLUGINS_DIR}) - Linux AMD64 only - Total size: ${total_size_mb}MB [skip ci]"
         git push origin HEAD:$CI_COMMIT_REF_NAME
       else
         echo "No changes to commit"
