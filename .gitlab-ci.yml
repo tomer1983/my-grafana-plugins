@@ -100,7 +100,7 @@ commit_plugins:
     - |
       if [ -n "$(git status --porcelain)" ]; then
         total_size_mb=$(cat total_size.txt | awk '{printf "%.2f", $1/1024/1024}')
-        git add grafana-plugins-*
+        git add .
         git commit -m "Update Grafana plugins (${PLUGINS_DIR}) - Linux AMD64 only - Total size: ${total_size_mb}MB [skip ci]"
         git push origin HEAD:$CI_COMMIT_REF_NAME
       else
