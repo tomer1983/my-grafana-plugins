@@ -62,7 +62,7 @@ download_plugins:
         curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
         
       done < plugins.txt
-    - zip ./grafana-plugins.zip "$PLUGINS_DIR"
+    - zip -r ./grafana-plugins.zip "$PLUGINS_DIR"
     - rm -rf "$PLUGINS_DIR/"
     - ls -latr
     - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
