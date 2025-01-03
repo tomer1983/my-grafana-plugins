@@ -38,16 +38,17 @@ download_plugins:
       echo "Creating directory: $PLUGINS_DIR"
       mkdir -p $PLUGINS_DIR
     - |
-      for plugin in $(cat plugins-linux-amd64.txt); do
+      for plugin in $(cat plugins-linux-amd64.txt)
+      do
         echo "Downloading plugin: $plugin"
         version_info=$(curl -s "$GRAFANA_API_URL/$plugin" | jq -r '.items[]? | select (.packages[]?.packageName == "linux-amd64" or .packages[]?.packageName == "any")  | .version')
 
-        if [ ! -z "$version_info" ]; then
-          # version=$(echo "$version_info" | jq -r '.version')
+        # if [ ! -z "$version_info" ]; then
+          version=$(echo "$version_info" | jq -r '.version')
           # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-        else
-          echo "Skipping $plugin - No version available"
-        fi
+        # else
+        #   echo "Skipping $plugin - No version available"
+        # fi
       done
         # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"        
         # Get the latest version info for Linux AMD64
