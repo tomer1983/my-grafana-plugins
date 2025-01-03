@@ -49,7 +49,7 @@ download_plugins:
 
         echo "proccecing $plugin plugin"
         
-        if [[ "$get_plugin_info" == "any"]]; 
+        if [[ "$get_plugin_info" == "any" ]]; 
         then
           echo -e "plugin $plugin arc is any"
           download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
