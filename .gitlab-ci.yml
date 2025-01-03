@@ -28,7 +28,7 @@ download_plugins:
   stage: download
   image: python:3.11-slim
   script:
-    - apt-get update && apt-get install -y curl zip
+    - apt-get update && apt-get install -y curl zip jq
     - |
       # Format date as YYYY-MM-DD
       FORMATTED_DATE=$(date +%Y-%m-%d)
