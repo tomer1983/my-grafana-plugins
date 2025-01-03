@@ -41,18 +41,18 @@ download_plugins:
         get_arc_info=$(echo $get_plugin_info | jq  'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
         get_version_info=$(echo $get_plugin_info | jq -r '.version')
 
-        # case "$arc_info" in
-        #   any)
-        #     echo "plugin $plugin  arc is $get_arc_info"
-        #     download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download";;
-        #   linux-amd64)
-        #     echo "plugin $plugin  arc is $get_arc_info"
-        #     download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64";;
-        #   *)
-        #     echo "error: could not fin arc for $plugin"
-        # esac
+        case "$arc_info" in
+          any)
+            echo "plugin $plugin  arc is $get_arc_info"
+            download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download";;
+          linux-amd64)
+            echo "plugin $plugin  arc is $get_arc_info"
+            download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64";;
+          *)
+            echo "error: could not fin arc for $plugin"
+        esac
 
-        # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
+        curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
         
       done < plugins.txt
     - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
