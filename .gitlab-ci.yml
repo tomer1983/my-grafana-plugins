@@ -16,7 +16,7 @@ discover_plugins:
     - apt-get update && apt-get install -y curl jq
     - |
       # Get plugins and filter for those that have Linux AMD64 support
-      curl -s "$GRAFANA_API_URL" |jq -r '.items[]? | select (.packages[]?.packageName == "linux-amd64") | .slug' > plugins.txt
+      curl -s "$GRAFANA_API_URL" |jq -r '.items[]? | select (.packages[]?.packageName == "linux-amd64" or .packages[]?.packageName == "any") | .slug' > plugins.txt
     - |
       echo "Found $(wc -l < plugins.txt) Linux AMD64 compatible plugins"
   artifacts:
@@ -39,7 +39,7 @@ download_plugins:
       while IFS= read -r plugin; do
         echo "Downloading plugin: $plugin"
         # Get the latest version info for Linux AMD64
-        version_info=$(curl -s "$GRAFANA_API_URL/$plugin" | jq -r '.items[]? | select (.packages[]?.packageName == "linux-amd64") | .version')
+        version_info=$(curl -s "$GRAFANA_API_URL/$plugin" | jq -r '.items[]? | select (.packages[]?.packageName == "linux-amd64" or .packages[]?.packageName == "any")  | .version')
         if [ ! -z "$version_info" ]; then
           version=$(echo "$version_info" | jq -r '.version')
           echo "Latest Linux AMD64 version: $version"
