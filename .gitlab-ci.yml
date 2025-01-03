@@ -41,7 +41,7 @@ download_plugins:
         get_arc_info=$(echo $get_plugin_info | jq  'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
         get_version_info=$(echo $get_plugin_info | jq -r '.version')
 
-        echo -E "\n\nplugin: $plugin"
+        echo -e "\n\nplugin: $plugin"
         echo "--------------------------"
         echo "get_plugin_info: $get_plugin_info"
         echo "get_arc_info: $get_arc_info"
@@ -49,21 +49,17 @@ download_plugins:
 
         echo "running $get_arc_info download $GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
         
+        if [[ "$get_plugin_info" == "any"]]; 
+        then
+          echo -e "plugin $plugin arc is any"
+          download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
+        else
+          echo -e "plugin $plugin arc is linux-amd64"
+          download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64"
+        fi
         
-        # case "$get_arc_info" in
-        #   any)
-        #     echo "plugin $plugin  arc is $get_arc_info"
-        #     download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download";;
-        #   linux-amd64)
-        #     echo "plugin $plugin  arc is $get_arc_info"
-        #     download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64";;
-        #   *)
-        #     echo "error: could not find arc ($arc)for $plugin"
-        #     # break
-        # esac
-        
-        # echo "running command : curl -L -o $PLUGINS_DIR/$plugin.zip $download_url"
-        # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
+        echo "running command : curl -L -o $PLUGINS_DIR/$plugin.zip $download_url"
+        curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
         
       done < plugins.txt
     - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
