@@ -41,7 +41,10 @@ download_plugins:
         get_arc_info=$(echo $get_plugin_info | jq  'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
         get_version_info=$(echo $get_plugin_info | jq -r '.version')
 
-        case "$arc_info" in
+        echo "running $GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
+        
+        
+        case "$get_arc_info" in
           any)
             echo "plugin $plugin  arc is $get_arc_info"
             download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download";;
