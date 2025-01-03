@@ -41,7 +41,7 @@ download_plugins:
         get_arc_info=$(echo $get_plugin_info | jq  'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
         get_version_info=$(echo $get_plugin_info | jq -r '.version')
 
-        echo "running $GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
+        echo "running $get_arc_info download $GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
         
         
         case "$get_arc_info" in
@@ -53,7 +53,7 @@ download_plugins:
             download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64";;
           *)
             echo "error: could not find arc ($arc)for $plugin"
-            break
+            # break
         esac
         
         echo "running command : curl -L -o $PLUGINS_DIR/$plugin.zip $download_url"
