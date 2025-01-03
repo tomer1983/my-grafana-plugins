@@ -38,7 +38,7 @@ download_plugins:
       for plugin in $(cat plugins.txt)
       do
         get_plugin_info=$(curl -s "$GRAFANA_API_URL/$plugin")
-        get_arc_info=$(echo $get_plugin_info | jq  'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
+        get_arc_info=$(echo $get_plugin_info | jq -r 'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
         get_version_info=$(echo $get_plugin_info | jq -r '.version')
 
         # echo -e "\n\nplugin: $plugin"
@@ -65,8 +65,8 @@ download_plugins:
     - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
   artifacts:
     paths:
-      - $PLUGINS_DIR
-      # - grafana-plugins-*
+      # - $PLUGINS_DIR
+      - grafana-plugins-*
       - variables.env
     expire_in: 1 day
   needs:
