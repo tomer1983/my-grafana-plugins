@@ -62,11 +62,14 @@ download_plugins:
         curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
         
       done < plugins.txt
+    - zip ./grafana-plugins.zip "$PLUGINS_DIR"
+    - rm -rf "$PLUGINS_DIR/"
+    - ls -latr
     - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
   artifacts:
     paths:
-      # - $PLUGINS_DIR
-      - grafana-plugins-*
+      - grafana-plugins.zip
+      # - grafana-plugins-*
       - variables.env
     expire_in: 1 day
   needs:
@@ -92,5 +95,5 @@ commit_plugins:
       else
         echo "No changes to commit"
       fi
-  # needs:
-  #   - calculate_size
+  needs:
+    - download_plugins
