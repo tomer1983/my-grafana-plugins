@@ -39,7 +39,7 @@ download_plugins:
       while IFS= read -r plugin; do
         echo "Downloading plugin: $plugin"
         # Get the latest version info for Linux AMD64
-        version_info=$(curl -s "$GRAFANA_API_URL/$plugin" | jq -r '.items[]? | select (.packages[]?.packageName == "linux-amd64") | .version''
+        version_info=$(curl -s "$GRAFANA_API_URL/$plugin" | jq -r '.items[]? | select (.packages[]?.packageName == "linux-amd64") | .version')
         if [ ! -z "$version_info" ]; then
           version=$(echo "$version_info" | jq -r '.version')
           echo "Latest Linux AMD64 version: $version"
