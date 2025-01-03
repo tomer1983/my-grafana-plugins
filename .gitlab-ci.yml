@@ -6,7 +6,6 @@ variables:
 stages:
   - discover
   - download
-  # - calculate_size
   - commit
 
 discover_plugins:
@@ -66,35 +65,6 @@ download_plugins:
   needs:
     - discover_plugins
 
-calculate_size:
-  stage: calculate_size
-  image: alpine:latest
-  script:
-    - source variables.env
-    - |
-      echo "Calculating total size of downloaded plugins..."
-      total_size_bytes=$(du -sb $PLUGINS_DIR | cut -f1)
-      total_size_mb=$(echo "scale=2; $total_size_bytes/1024/1024" | bc)
-      echo "Total size of all Linux AMD64 plugins: ${total_size_mb}MB (${total_size_bytes} bytes)"
-      echo "$total_size_bytes" > total_size.txt
-      echo "Size breakdown by plugin:"
-      cd $PLUGINS_DIR
-      for plugin in *.zip; do
-        if [ -f "$plugin" ]; then
-          size=$(du -sh "$plugin" | cut -f1)
-          echo "- $plugin: $size"
-        fi
-      done
-  artifacts:
-    paths:
-      - grafana-plugins-*
-      - total_size.txt
-      - variables.env
-    reports:
-      metrics: total_size.txt
-    expire_in: 1 day
-  needs:
-    - download_plugins
 
 commit_plugins:
   stage: commit
