@@ -52,9 +52,11 @@ download_plugins:
             echo "plugin $plugin  arc is $get_arc_info"
             download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64";;
           *)
-            echo "error: could not fin arc for $plugin"
+            echo "error: could not find arc ($arc)for $plugin"
+            break
         esac
-
+        
+        echo "running command : curl -L -o $PLUGINS_DIR/$plugin.zip $download_url"
         curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
         
       done < plugins.txt
