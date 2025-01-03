@@ -6,7 +6,7 @@ variables:
 stages:
   - discover
   - download
-  - calculate_size
+  # - calculate_size
   - commit
 
 discover_plugins:
@@ -38,33 +38,29 @@ download_plugins:
     - |
       for plugin in $(cat plugins.txt)
       do
-        version_info=$(curl -s "$GRAFANA_API_URL/$plugin" | jq -r '.version')
-        echo "Downloading plugin: $plugin:$version_info"
+        get_plugin_info=$(curl -s "$GRAFANA_API_URL/$plugin")
+        get_arc_info=$(echo $get_plugin_info | jq  'if .packages[].packageName == "any" then "any" else "linux-amd64" end
+        get_version_info=$(echo $get_plugin_info | jq -r '.version')
 
-        # if [ ! -z "$version_info" ]; then
-          version=$(echo "$version_info" | jq -r '.version')
-          # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-        # else
-        #   echo "Skipping $plugin - No version available"
-        # fi
-      done
-        # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"        
-        # Get the latest version info for Linux AMD64
+        case "$arc_info" in
+          any)
+            echo "plugin $plugin  arc is $get_arc_info"
+            download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download";;
+          linux-amd64)
+            echo "plugin $plugin  arc is $get_arc_info"
+            download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64";;
+          *)
+            echo "error: could not fin arc for $plugin"
+        esac
+
+        curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
         
-        # if [ ! -z "$version_info" ]; then
-          # version=$(echo "$version_info" | jq -r '.version')
-          # echo "Latest Linux AMD64 version: $version"
-          # download_url="$GRAFANA_API_URL/$plugin/versions/$version/download?os=linux&arch=amd64"
-          # echo "#Download Url: {download_url}"
-          # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-        # else
-          # echo "Skipping $plugin - No Linux AMD64 version available"
-        # fi
-      # done < plugins.txt
+      done < plugins.txt
     - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
   artifacts:
     paths:
-      - grafana-plugins-*
+      - $PLUGINS_DIR
+      # - grafana-plugins-*
       - variables.env
     expire_in: 1 day
   needs:
@@ -119,5 +115,5 @@ commit_plugins:
       else
         echo "No changes to commit"
       fi
-  needs:
-    - calculate_size
+  # needs:
+  #   - calculate_size
