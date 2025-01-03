@@ -59,6 +59,7 @@ esnet-arcdiagram-panel
 grafana-astradb-datasource
 rocketcom-astrotheme-panel
 grafana-atlassianstatuspage-datasource
+aws-datasource-provisioner-app
 grafana-iot-sitewise-datasource
 grafana-iot-twinmaker-app
 grafana-x-ray-datasource
@@ -273,8 +274,8 @@ grafana-strava-datasource
 streamr-datasource
 grafana-sumologic-datasource
 fetzerch-sunandmoon-datasource
-grafana-surrealdb-datasource
 fiskaly-surrealdb-datasource
+grafana-surrealdb-datasource
 grafana-synthetic-monitoring-app
 tdengine-datasource
 sni-thruk-datasource
