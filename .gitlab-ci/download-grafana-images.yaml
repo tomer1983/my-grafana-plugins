@@ -6,4 +6,6 @@ download-grafana-images:
     - bash --version
     - ls -latr .gitlab-ci/download-grafana-images.sh
     - chmod +x .gitlab-ci/download-grafana-images.sh
+    - ls -latr .gitlab-ci/download-grafana-images.sh
+    - exit 0
     - .gitlab-ci/download-grafana-images.sh
