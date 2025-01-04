@@ -7,8 +7,8 @@ PLUGINS_FILE="$1"
 PLUGINS_DIR="grafana-plugins"
 
 
-git config --global user.email "tomer1983@gmail.com"
-git config --global user.name "tomer1983"
+git config --global user.email "$GIT_EMAIL"
+git config --global user.name "$GIT_NAME"
 
 process_plugins(){
     
