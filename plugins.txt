@@ -19,7 +19,6 @@ volkovlabs-table-panel
 netsage-sankey-panel
 nikosc-percenttrend-panel
 knightss27-weathermap-panel
-aws-datasource-provisioner-app
 grafana-resourcesexporter-app
 grafana-exploretraces-app
 grafana-pyroscope-app
