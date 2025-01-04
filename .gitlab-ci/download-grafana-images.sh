@@ -6,6 +6,7 @@ GRAFANA_API_URL="https://grafana.com/api/plugins"
 PLUGINS_FILE="$1"
 PLUGINS_DIR="grafana-plugins"
 
+echo "
 
 git config --global user.email "tomer1983@gmail.com"
 git config --global user.name "tomer1983"
@@ -31,7 +32,7 @@ process_plugins(){
         fi
         
         curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-        commit_plugins("$PLUGINS_DIR/$plugin.zip")
+        echo "$PLUGINS_DIR/$plugin.zip""
     done
     # zip -r ./grafana-plugins.zip "$PLUGINS_DIR"
     du -h *
