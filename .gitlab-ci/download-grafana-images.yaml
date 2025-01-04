@@ -3,4 +3,4 @@ download-grafana-images:
   script:
     - ls -latr .gitlab-ci/download-grafana-images.sh
     - chmod +x .gitlab-ci/download-grafana-images.sh
-    - ./.gitlab-ci/download-grafana-images.sh
+    - .gitlab-ci/download-grafana-images.sh
