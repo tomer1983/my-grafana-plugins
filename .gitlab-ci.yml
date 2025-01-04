@@ -74,7 +74,7 @@ download_plugins:
     - echo "PLUGINS_DIR_OFFICIAL=$PLUGINS_DIR_OFFICIAL" >> variables.env
   artifacts:
     paths:
-      - grafana-plugins-community.zips.zip
+      - grafana-plugins-community.zip
       # - grafana-plugins-*
       - variables.env
     expire_in: 1 day
