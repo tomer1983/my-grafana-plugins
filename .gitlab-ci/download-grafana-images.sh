@@ -45,6 +45,7 @@ commit_plugins(){
     git add .
     git commit --allow-empty -m "Update Grafana plugin $1 [skip ci]"
     git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
+    sleep 2
 }
 
 process_plugins
