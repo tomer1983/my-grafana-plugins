@@ -30,9 +30,9 @@ process_plugins(){
             download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64"
         fi
         
-        curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" 
-        # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-        echo "$PLUGINS_DIR/$plugin.zip"
+        # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" 
+        curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
+        commit_plugins("$PLUGINS_DIR/$plugin.zip")
     done
     # zip -r ./grafana-plugins.zip "$PLUGINS_DIR"
     du -h *
