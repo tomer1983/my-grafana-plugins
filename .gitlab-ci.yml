@@ -1,105 +1,35 @@
+# .gitlab-ci.yml
 variables:
-  GRAFANA_VERSION: "11.4"
-  DATE_SUFFIX: ${CI_PIPELINE_CREATED_AT}
-  GRAFANA_API_URL: "https://grafana.com/api/plugins"
-
+  PLUGINS_FILE: plugins.txt
+image: alpine:latest
 stages:
-  - discover
-  - download
-  - commit
+  - build
+  - deploy
 
-discover_plugins:
-  stage: discover
-  image: python:3.11-slim
+build_job:
+  stage: build
   script:
-    - apt-get update && apt-get install -y curl jq
+    # Read plugins from file and store in variable
+    - PLUGINS=$(cat $PLUGINS_FILE)
+    # Use the plugins in your build process
     - |
-      # Get plugins and filter for those that have Linux AMD64 support
-      curl -s "$GRAFANA_API_URL" |jq -r '.items[]? | select (.packages[]?.packageName == "linux-amd64" or .packages[]?.packageName == "any") | .slug' > plugins.txt
+      echo "Installing plugins: $PLUGINS"
     - |
-      echo "Found $(wc -l < plugins.txt) plugins"
+      for plugin in $PLUGINS; do
+        echo "Installing plugin: $plugin"
+        # Add your plugin installation command here
+        # For example: npm install $plugin
+      done
   artifacts:
     paths:
-      - plugins.txt
-    expire_in: 1 day
+      - $PLUGINS_FILE
+    expire_in: 1 week
 
-download_plugins:
-  stage: download
-  image: python:3.11-slim
+deploy_job:
+  stage: deploy
   script:
-    - apt-get update && apt-get install -y curl zip jq
-    - |
-      # Format date as YYYY-MM-DD
-      FORMATTED_DATE=$(date +%Y-%m-%d)
-      PLUGINS_DIR="grafana-plugins"
-      PLUGINS_DIR_OFFICIAL="$PLUGINS_DIR-oficial"
-      PLUGINS_DIR_COMMUNITY="$PLUGINS_DIR-community"
-      echo "Creating directory: $PLUGINS_DIR"
-      mkdir -p $PLUGINS_DIR $PLUGINS_DIR_OFFICIAL $PLUGINS_DIR_COMMUNITY
-    - |
-      for plugin in $(cat plugins.txt)
-      do
-        get_plugin_info=$(curl -s "$GRAFANA_API_URL/$plugin")
-        get_arc_info=$(echo $get_plugin_info | jq -r 'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
-        get_version_info=$(echo $get_plugin_info | jq -r '.version')
-
-        # echo -e "\n\nplugin: $plugin"
-        # echo "--------------------------"
-        # echo "get_plugin_info: $get_plugin_info"
-        # echo "get_arc_info: $get_arc_info"
-        # echo "get_version_info: $get_version_info"
-
-        echo "proccecing $plugin plugin"
-        
-        if [[ "$get_arc_info" == "any" ]]; 
-        then
-          echo -e "plugin $plugin arc is any"
-          download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
-          curl -L -o "$PLUGINS_DIR_COMMUNITY/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-        # else
-        #   echo -e "plugin $plugin arc is linux-amd64"
-        #   download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64"
-        #   curl -L -o "$PLUGINS_DIR_OFFICIAL/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-        fi
-        
-        
-      done < plugins.txt
-    # - zip -r ./grafana-plugins-official.zip "$PLUGINS_DIR_OFFICIAL"
-    - zip -r ./grafana-plugins-community.zip "$PLUGINS_DIR_COMMUNITY"
-    - du -h *
-    - rm -rf "$PLUGINS_DIR_OFFICIAL"
-    - rm -rf "$PLUGINS_DIR_COMMUNITY"
-    - ls -latr
-    - echo "PLUGINS_DIR_COMMUNITY=$PLUGINS_DIR_COMMUNITY" >> variables.env
-    - echo "PLUGINS_DIR_OFFICIAL=$PLUGINS_DIR_OFFICIAL" >> variables.env
-  artifacts:
-    paths:
-      - grafana-plugins-community.zip
-      # - grafana-plugins-*
-      - variables.env
-    expire_in: 1 day
-  needs:
-    - discover_plugins
-
-
-commit_plugins:
-  stage: commit
-  image: alpine:latest
-  before_script:
-    - apk add --no-cache git
-    - git config --global user.email "tomer1983@gmail.com"
-    - git config --global user.name "tomer1983"
-  script:
-    - source variables.env
-    - |
-      if [ -n "$(git status --porcelain)" ]; then
-        # total_size_mb=$(cat total_size.txt | awk '{printf "%.2f", $1/1024/1024}')
-        git add .
-        git commit -m "Update Grafana plugins [skip ci]"
-        # git push origin HEAD:$CI_COMMIT_REF_NAME
-        git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
-      else
-        echo "No changes to commit"
-      fi
-  needs:
-    - download_plugins
+    - echo "Deploying with plugins from $PLUGINS_FILE"
+    - PLUGINS=$(cat $PLUGINS_FILE)
+    # Use plugins in deployment if needed
+  dependencies:
+    - build_job
