@@ -8,6 +8,4 @@ download-grafana-images:
     - chmod +x ./.gitlab-ci/download-grafana-images.sh
     - ls -latr ./.gitlab-ci/download-grafana-images.sh 
     - ls -latr plugins.txt
-    # - cat .gitlab-ci/download-grafana-images.sh
-    # - exit 0
     - ./.gitlab-ci/download-grafana-images.sh
