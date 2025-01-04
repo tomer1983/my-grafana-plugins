@@ -1,7 +1,7 @@
 download-grafana-images:
   stage: download-grafana-images
   script:
-    - apt-get update && apt-get install -y curl jq zip
+    - apt-get update && apt-get install -y curl jq zip git
     - echo $SHELL
     - bash --version
     - ls -latr .gitlab-ci/download-grafana-images.sh

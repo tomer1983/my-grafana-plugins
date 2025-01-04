@@ -1,15 +1,13 @@
 #!/bin/bash
 set -eo pipefail
 
-GRAFANA_VERSION: "11.4"
-DATE_SUFFIX: ${CI_PIPELINE_CREATED_AT}
-GRAFANA_API_URL: "https://grafana.com/api/plugins"  
-PLUGINS_FILE: plugins.txt
-PLUGINS_DIR: "grafana-plugins"
+GRAFANA_VERSION="11.4"
+GRAFANA_API_URL="https://grafana.com/api/plugins"  
+PLUGINS_FILE=plugins.txt
+PLUGINS_DIR="grafana-plugins"
 
 
 
-apk add --no-cache git
 git config --global user.email "tomer1983@gmail.com"
 git config --global user.name "tomer1983"
 
