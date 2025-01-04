@@ -10,4 +10,4 @@ download-grafana-images:
     - chmod +x ./.gitlab-ci/download-grafana-images.sh
     - ls -latr ./.gitlab-ci/download-grafana-images.sh 
     - ls -latr $PLUGINS_FILE
-    - ./.gitlab-ci/download-grafana-images.sh
+    - ./.gitlab-ci/download-grafana-images.sh "$PLUGINS_FILE"

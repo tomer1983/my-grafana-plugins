@@ -3,9 +3,10 @@ set -eo pipefail
 
 GRAFANA_VERSION="11.4"
 GRAFANA_API_URL="https://grafana.com/api/plugins"  
-PLUGINS_FILE=plugins.txt
+PLUGINS_FILE="$1"
 PLUGINS_DIR="grafana-plugins"
 
+echo -e "plugins file content:\n$PLUGINS_FILE"
 
 
 git config --global user.email "tomer1983@gmail.com"
