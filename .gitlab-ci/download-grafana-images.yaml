@@ -1,4 +1,5 @@
 download-grafana-images:
   stage: download-grafana-images
   script:
+    - chmod 777 ./.gitlab-ci/download-grafana-images.sh
     - ./.gitlab-ci/download-grafana-images.sh
