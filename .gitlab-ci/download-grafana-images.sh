@@ -6,8 +6,10 @@ GRAFANA_API_URL="https://grafana.com/api/plugins"
 PLUGINS_FILE="$1"
 PLUGINS_DIR="grafana-plugins"
 
-echo -e "plugins file content:\n$PLUGINS_FILE"
 
+prepare(){
+    echo -e "plugins file content:\n$PLUGINS_FILE"
+}
 
 git config --global user.email "tomer1983@gmail.com"
 git config --global user.name "tomer1983"
@@ -46,4 +48,4 @@ commit_plugins(){
     git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
 }
 
-process_plugins()
+prepare()
