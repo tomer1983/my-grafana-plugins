@@ -1,7 +1,7 @@
 download-grafana-images:
   stage: download-grafana-images
   script:
-    - apk add --no-cache --upgrade bash
+    - apt-get update && apt-get install -y curl jq zip
     - echo $SHELL
     - bash --version
     - ls -latr .gitlab-ci/download-grafana-images.sh

@@ -7,7 +7,7 @@ GRAFANA_API_URL: "https://grafana.com/api/plugins"
 PLUGINS_FILE: plugins.txt
 PLUGINS_DIR: "grafana-plugins"
 
-apk add curl zip jq
+
 
 apk add --no-cache git
 git config --global user.email "tomer1983@gmail.com"
