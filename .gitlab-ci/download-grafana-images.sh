@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+# set -eo pipefail
 
 GRAFANA_VERSION="11.4"
 GRAFANA_API_URL="https://grafana.com/api/plugins"  

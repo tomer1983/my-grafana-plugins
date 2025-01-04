@@ -9,4 +9,4 @@ download-grafana-images:
     - cat $PLUGINS_FILE
   script:
     - ls -latr
-    - ./.gitlab-ci/download-grafana-images.sh
+    - ./.gitlab-ci/download-grafana-images.sh "$PLUGINS_FILE"
