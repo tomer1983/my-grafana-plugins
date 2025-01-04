@@ -14,7 +14,8 @@ stages:
 process_plugins:
   stage: process_plugins
   script:
-    - apt-get update && apt-get install -y curl zip jq
+    # - apt-get update && apt-get install -y curl zip jq
+    - apk add curl zip jq
     - PLUGINS=$(cat $PLUGINS_FILE)
     - mkdir -p $PLUGINS_DIR
     - |
