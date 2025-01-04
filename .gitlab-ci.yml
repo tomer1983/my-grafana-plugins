@@ -7,4 +7,3 @@ stages:
 
 include:
    - local: '.gitlab-ci/download-grafana-images.yaml'
-   - local: 'plugins.txt'

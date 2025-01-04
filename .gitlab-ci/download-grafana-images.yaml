@@ -1,5 +1,7 @@
 download-grafana-images:
   stage: download-grafana-images
+  variables:
+    PLUGINS_FILE: plugins.txt
   script:
     - apt-get update && apt-get install -y curl jq zip git
     - echo $SHELL
@@ -7,5 +9,5 @@ download-grafana-images:
     - ls -latr ./.gitlab-ci/download-grafana-images.sh
     - chmod +x ./.gitlab-ci/download-grafana-images.sh
     - ls -latr ./.gitlab-ci/download-grafana-images.sh 
-    - ls -latr plugins.txt
+    - ls -latr $PLUGINS_FILE
     - ./.gitlab-ci/download-grafana-images.sh
