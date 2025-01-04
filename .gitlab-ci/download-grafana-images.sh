@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -eo pipefail
 
 GRAFANA_VERSION: "11.4"
 DATE_SUFFIX: ${CI_PIPELINE_CREATED_AT}
