@@ -2,7 +2,7 @@ download-grafana-images:
   stage: download-grafana-images
   variables:
     PLUGINS_FILE: plugins.txt
-  befire_script:
+  before_script:
     - ls -latr
     - apt-get update && apt-get install -y curl jq zip git
     - chmod +x ./.gitlab-ci/download-grafana-images.sh
