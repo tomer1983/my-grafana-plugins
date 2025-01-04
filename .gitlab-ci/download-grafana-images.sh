@@ -47,7 +47,7 @@ commit_plugins(){
         git commit -m "Update Grafana plugins $1[skip ci]"
         git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
     else
-        echo "No changes to commit" || True
+        echo "No changes to commit" 
     fi    
 
 
