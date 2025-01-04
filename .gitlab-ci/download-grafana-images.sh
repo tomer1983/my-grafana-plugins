@@ -42,10 +42,13 @@ process_plugins(){
 
 commit_plugins(){
     echo "commiting $1"
-    git add .
-    git commit --allow-empty -m "Update Grafana plugin $1 [skip ci]"
-    git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
-    sleep 2
-}
+    if [ -n "$(git status --porcelain)" ]; then
+        git add .
+        git commit -m "Update Grafana plugins $1[skip ci]"
+        git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
+    else
+        echo "No changes to commit" || True
+    fi    
+
 
 process_plugins
