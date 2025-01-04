@@ -6,7 +6,6 @@ GRAFANA_API_URL="https://grafana.com/api/plugins"
 PLUGINS_FILE="$1"
 PLUGINS_DIR="grafana-plugins"
 
-echo "
 
 git config --global user.email "tomer1983@gmail.com"
 git config --global user.name "tomer1983"
