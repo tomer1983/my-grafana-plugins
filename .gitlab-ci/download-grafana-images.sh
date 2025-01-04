@@ -47,4 +47,4 @@ commit_plugins(){
     git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
 }
 
-process_plugins()
+process_plugins
