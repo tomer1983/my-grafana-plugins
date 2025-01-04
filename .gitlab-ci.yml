@@ -1,67 +1,8 @@
-# .gitlab-ci.yml
-variables:
-  GRAFANA_VERSION: "11.4"
-  DATE_SUFFIX: ${CI_PIPELINE_CREATED_AT}
-  GRAFANA_API_URL: "https://grafana.com/api/plugins"  
-  PLUGINS_FILE: plugins.txt
-  PLUGINS_DIR: "grafana-plugins"
-
-image: alpine:latest
-stages:
-  - process_plugins
-  - commit_plugins 
-
-process_plugins:
-  stage: process_plugins
-  script:
-    # - apt-get update && apt-get install -y curl zip jq
-    - apk add curl zip jq
-    - PLUGINS=$(cat $PLUGINS_FILE)
-    - mkdir -p $PLUGINS_DIR
-    - |
-      for plugin in $PLUGINS; do
-        echo "Installing plugin: $plugin"
-        get_plugin_info=$(curl -s "$GRAFANA_API_URL/$plugin" || echo "plugin "$plugin not found)
-        get_arc_info=$(echo $get_plugin_info | jq -r 'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
-        get_version_info=$(echo $get_plugin_info | jq -r '.version')
-
-        if [[ "$get_arc_info" == "any" ]]; 
-        then
-          echo -e "plugin $plugin arc is any"
-          download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
-        else
-          echo -e "plugin $plugin arc is linux-amd64"
-          download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64"
-        fi
-          curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-      done
-
-    - zip -r ./grafana-plugins.zip "$PLUGINS_DIR"
-    - du -h *
-    - rm -rf "$PLUGINS_DIR"
-    - ls -latr
-    - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
-  artifacts:
-    paths:
-      - grafana-plugins.zip
-    expire_in: 1 h
-
-commit_plugins:
-  stage: commit_plugins 
+default:
   image: alpine:latest
-  before_script:
-    - apk add --no-cache git
-    - git config --global user.email "tomer1983@gmail.com"
-    - git config --global user.name "tomer1983"
-  script:
-    - source variables.env
-    - |
-      if [ -n "$(git status --porcelain)" ]; then
-        git add .
-                git commit -m "Update Grafana plugins [skip ci]"
-        git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
-      else
-        echo "No changes to commit"
-      fi  
-  needs:
-    - process_plugins  
+
+stages:
+   - download-grafana-images
+
+include:
+   - local: '.gitlab-ci/download-grafana-images.yaml'
