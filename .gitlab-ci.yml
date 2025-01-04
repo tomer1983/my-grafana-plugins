@@ -21,7 +21,7 @@ process_plugins:
     - |
       for plugin in $PLUGINS; do
         echo "Installing plugin: $plugin"
-        get_plugin_info=$(curl -s "$GRAFANA_API_URL/$plugin")
+        get_plugin_info=$(curl -s "$GRAFANA_API_URL/$plugin" || echo "plugin "$plugin not found)
         get_arc_info=$(echo $get_plugin_info | jq -r 'if .packages[].packageName == "any" then "any" else "linux-amd64" end')
         get_version_info=$(echo $get_plugin_info | jq -r '.version')
 
