@@ -32,7 +32,7 @@ process_plugins(){
         
         # curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" 
         curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
-        commit_plugins("$PLUGINS_DIR/$plugin.zip")
+        commit_plugins "$PLUGINS_DIR/$plugin.zip"
     done
     # zip -r ./grafana-plugins.zip "$PLUGINS_DIR"
     du -h *
@@ -42,9 +42,9 @@ process_plugins(){
 
 commit_plugins(){
     echo "commiting $1"
-    # git add "$1"
-    # git commit -m "Update Grafana plugin $(cat $1 | awk '{print $1}') [skip ci]"
-    # git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
+    git add "$1"
+    git commit -m "Update Grafana plugin $(cat $1 | awk '{print $1}') [skip ci]"
+    git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
 }
 
 process_plugins
