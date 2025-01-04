@@ -1,6 +1,7 @@
 download-grafana-images:
   stage: download-grafana-images
   script:
+    - apk add bash
     - ls -latr .gitlab-ci/download-grafana-images.sh
     - chmod +x .gitlab-ci/download-grafana-images.sh
     - .gitlab-ci/download-grafana-images.sh
