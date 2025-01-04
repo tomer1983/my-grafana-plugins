@@ -7,9 +7,9 @@ PLUGINS_FILE="$1"
 PLUGINS_DIR="grafana-plugins"
 
 ls -latr
-prepare(){
-    echo -e "plugins file content:\n$PLUGINS_FILE"
-}
+echo -e "plugins file content:\n$PLUGINS_FILE"
+
+exit 0
 
 git config --global user.email "tomer1983@gmail.com"
 git config --global user.name "tomer1983"
@@ -42,6 +42,7 @@ process_plugins(){
     rm -rf "$PLUGINS_DIR"
     ls -latr
 }
+
 commit_plugins(){
     git add "$1"
     git commit -m "Update Grafana plugin $(cat $1 | awk '{print $1}') [skip ci]"
