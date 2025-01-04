@@ -9,10 +9,10 @@ variables:
 image: alpine:latest
 stages:
   - process_plugins
-  - commit_plugins
+  - commit_plugins 
 
 process_plugins:
-  stage: build
+  stage: process_plugins
   script:
     - apt-get update && apt-get install -y curl zip jq
     - PLUGINS=$(cat $PLUGINS_FILE)
@@ -46,7 +46,7 @@ process_plugins:
     expire_in: 1 h
 
 commit_plugins:
-  stage: commit
+  stage: commit_plugins 
   image: alpine:latest
   before_script:
     - apk add --no-cache git
