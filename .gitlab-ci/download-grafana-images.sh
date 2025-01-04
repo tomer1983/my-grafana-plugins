@@ -42,7 +42,7 @@ process_plugins(){
 
 commit_plugins(){
     echo "commiting $1"
-    git add "$1"
+    git add .
     git commit -m "Update Grafana plugin $(cat $1 | awk '{print $1}') [skip ci]"
     git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
 }
