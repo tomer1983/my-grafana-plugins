@@ -1,4 +1,4 @@
-#!bash
+#!/bin/bash
 set -eo pipefail
 
 GRAFANA_VERSION: "11.4"
