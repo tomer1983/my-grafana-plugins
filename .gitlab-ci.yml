@@ -31,9 +31,11 @@ download_plugins:
     - |
       # Format date as YYYY-MM-DD
       FORMATTED_DATE=$(date +%Y-%m-%d)
-      PLUGINS_DIR="grafana-plugins-${FORMATTED_DATE}"
+      PLUGINS_DIR="grafana-plugins"
+      PLUGINS_DIR_OFFICIAL="$PLUGINS_DIR-oficial"
+      PLUGINS_DIR_COMMUNITY="$PLUGINS_DIR-community"
       echo "Creating directory: $PLUGINS_DIR"
-      mkdir -p $PLUGINS_DIR
+      mkdir -p $PLUGINS_DIR $PLUGINS_DIR_OFFICIAL $PLUGINS_DIR_COMMUNITY
     - |
       for plugin in $(cat plugins.txt)
       do
@@ -53,22 +55,26 @@ download_plugins:
         then
           echo -e "plugin $plugin arc is any"
           download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download"
-        else
-          echo -e "plugin $plugin arc is linux-amd64"
-          download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64"
+          curl -L -o "$PLUGINS_DIR_COMMUNITY/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
+        # else
+        #   echo -e "plugin $plugin arc is linux-amd64"
+        #   download_url="$GRAFANA_API_URL/$plugin/versions/$get_version_info/download?os=linux&arch=amd64"
+        #   curl -L -o "$PLUGINS_DIR_OFFICIAL/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
         fi
         
-        echo "running command : curl -L -o $PLUGINS_DIR/$plugin.zip $download_url"
-        curl -L -o "$PLUGINS_DIR/$plugin.zip" "$download_url" || echo "Failed to download $plugin"
         
       done < plugins.txt
-    - zip -r ./grafana-plugins.zip "$PLUGINS_DIR"
-    - rm -rf "$PLUGINS_DIR/"
+    # - zip -r ./grafana-plugins-official.zip "$PLUGINS_DIR_OFFICIAL"
+    - zip -r ./grafana-plugins-community.zip "$PLUGINS_DIR_COMMUNITY"
+    - du -h *
+    - rm -rf "$PLUGINS_DIR_OFFICIAL"
+    - rm -rf "$PLUGINS_DIR_COMMUNITY"
     - ls -latr
-    - echo "PLUGINS_DIR=$PLUGINS_DIR" >> variables.env
+    - echo "PLUGINS_DIR_COMMUNITY=$PLUGINS_DIR_COMMUNITY" >> variables.env
+    - echo "PLUGINS_DIR_OFFICIAL=$PLUGINS_DIR_OFFICIAL" >> variables.env
   artifacts:
     paths:
-      - grafana-plugins.zip
+      - grafana-plugins-community.zips.zip
       # - grafana-plugins-*
       - variables.env
     expire_in: 1 day
@@ -87,9 +93,9 @@ commit_plugins:
     - source variables.env
     - |
       if [ -n "$(git status --porcelain)" ]; then
-        total_size_mb=$(cat total_size.txt | awk '{printf "%.2f", $1/1024/1024}')
+        # total_size_mb=$(cat total_size.txt | awk '{printf "%.2f", $1/1024/1024}')
         git add .
-        git commit -m "Update Grafana plugins (${PLUGINS_DIR}) - Linux AMD64 only - Total size: ${total_size_mb}MB [skip ci]"
+        git commit -m "Update Grafana plugins [skip ci]"
         # git push origin HEAD:$CI_COMMIT_REF_NAME
         git push https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$CI_COMMIT_REF_NAME
       else
