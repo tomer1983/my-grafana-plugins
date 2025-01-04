@@ -4,7 +4,8 @@ download-grafana-images:
     PLUGINS_FILE: plugins.txt
   before_script:
     - ls -latr
-    - apt-get update && apt-get install -y curl jq zip git
+    - apt-get update && apt-get install -y curl jq zip git dos2unix
+    - dos2unix ./.gitlab-ci/download-grafana-images.sh
     - chmod +x ./.gitlab-ci/download-grafana-images.sh
     - cat $PLUGINS_FILE
   script:
