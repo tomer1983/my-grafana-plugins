@@ -1,6 +1,6 @@
-ARG GRAFANA_VERSION=latest
+ARG GRAFANA_VERSION=11.4.0
 
-FROM grafana/grafana:${GRAFANA_VERSION}
+FROM grafana/grafana-enterprise:${GRAFANA_VERSION}
 
 USER root
 
