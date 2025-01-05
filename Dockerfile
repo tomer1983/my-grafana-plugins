@@ -7,16 +7,24 @@ USER root
 # Copy plugins list
 COPY plugins.txt /tmp/plugins.txt
 
-# Install plugins from the list with error handling
-RUN while IFS= read -r plugin || [ -n "$plugin" ]; do \
-    if [ ! -z "$plugin" ]; then \
-        echo "Installing plugin: $plugin" && \
-        grafana-cli --pluginsDir "/var/lib/grafana/plugins" plugins install "$plugin" || exit 1; \
-    fi \
-done < /tmp/plugins.txt
+# Clean up plugins.txt and install plugins
+RUN sed -i 's/\r//g' /tmp/plugins.txt && \
+    grep -v '^#' /tmp/plugins.txt | \
+    sed '/^[[:space:]]*$/d' | \
+    sed 's/^[[:space:]]*//;s/[[:space:]]*$//' > /tmp/plugins-clean.txt && \
+    echo "Starting plugin installation..." && \
+    while IFS= read -r plugin || [ -n "$plugin" ]; do \
+        echo "Attempting to install plugin: $plugin" && \
+        if grafana-cli --pluginsDir "/var/lib/grafana/plugins" plugins install "$plugin"; then \
+            echo "✅ Successfully installed plugin: $plugin"; \
+        else \
+            echo "❌ Failed to install plugin: $plugin"; \
+        fi; \
+    done < /tmp/plugins-clean.txt
 
-# Verify installations
-RUN grafana-cli plugins ls
+# List installed plugins for verification
+RUN echo "Installed plugins:" && \
+    grafana-cli plugins ls
 
 # Switch back to grafana user
 USER grafana
