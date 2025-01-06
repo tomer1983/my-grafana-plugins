@@ -9,7 +9,6 @@ COPY plugins.txt /tmp/plugins.txt
 
 RUN mkdir -p /plugins 
 
-# VOLUME ['/data/grafana/plugins']
 
 # Clean up plugins.txt and install plugins
 RUN sed -i 's/\r//g' /tmp/plugins.txt && \
@@ -31,5 +30,6 @@ RUN chmod 777 /plugins
 RUN echo "Installed plugins:" && \
     grafana cli plugins ls
 
+# VOLUME ['/plugins']
 # Switch back to grafana user
 USER grafana
