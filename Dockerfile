@@ -7,7 +7,7 @@ USER root
 # Copy plugins list
 COPY plugins.txt /tmp/plugins.txt
 
-RUN mkdir -p /data/grafana/plugins && chown -R grafana:grafana /data/grafana/plugins
+RUN mkdir -p /data/grafana/plugins
 
 # Clean up plugins.txt and install plugins
 RUN sed -i 's/\r//g' /tmp/plugins.txt && \
