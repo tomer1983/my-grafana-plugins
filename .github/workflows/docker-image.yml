@@ -27,4 +27,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/grafana-custom-plugins:11.4.0
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/grafana-enterprise:11.4.0
