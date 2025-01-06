@@ -9,7 +9,7 @@ COPY plugins.txt /tmp/plugins.txt
 
 RUN mkdir -p /data/grafana/plugins 
 
-VOLUME ['/data/grafana/plugins']
+# VOLUME ['/data/grafana/plugins']
 
 # Clean up plugins.txt and install plugins
 RUN sed -i 's/\r//g' /tmp/plugins.txt && \
@@ -25,7 +25,8 @@ RUN sed -i 's/\r//g' /tmp/plugins.txt && \
             echo "❌ Failed to install plugin: $plugin"; \
         fi; \
     done < /tmp/plugins-clean.txt
-
+RUN chown -R grafana:grafana /data/grafana/plugins 
+RUN chmod 777 /data/grafana/plugins
 # List installed plugins for verification
 RUN echo "Installed plugins:" && \
     grafana cli plugins ls
