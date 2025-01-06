@@ -7,7 +7,7 @@ USER root
 # Copy plugins list
 COPY plugins.txt /tmp/plugins.txt
 
-RUN mkdir -p /data/grafana/plugins 
+RUN mkdir -p /plugins 
 
 # VOLUME ['/data/grafana/plugins']
 
@@ -19,14 +19,14 @@ RUN sed -i 's/\r//g' /tmp/plugins.txt && \
     echo "Starting plugin installation..." && \
     while IFS= read -r plugin || [ -n "$plugin" ]; do \
         echo "Attempting to install plugin: $plugin" && \
-        if grafana cli --pluginsDir "/data/grafana/plugins" plugins install "$plugin"; then \
+        if grafana cli --pluginsDir "/plugins" plugins install "$plugin"; then \
             echo "✅ Successfully installed plugin: $plugin"; \
         else \
             echo "❌ Failed to install plugin: $plugin"; \
         fi; \
     done < /tmp/plugins-clean.txt
 # RUN chown -R grafana:grafana /data/grafana/plugins 
-RUN chmod 777 /data/grafana/plugins
+RUN chmod 777 /plugins
 # List installed plugins for verification
 RUN echo "Installed plugins:" && \
     grafana cli plugins ls
