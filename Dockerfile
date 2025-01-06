@@ -7,7 +7,7 @@ USER root
 # Copy plugins list
 COPY plugins.txt /tmp/plugins.txt
 
-RUN mkdir -p /plugins 
+RUN mkdir -p /tmp/plugins 
 
 
 # Clean up plugins.txt and install plugins
@@ -24,10 +24,10 @@ RUN sed -i 's/\r//g' /tmp/plugins.txt && \
             echo "❌ Failed to install plugin: $plugin"; \
         fi; \
     done < /tmp/plugins-clean.txt
-RUN cp -R /var/lib/grafana/plugins/* /plugins/ 
-RUN chmod 777 /plugins
+RUN cp -R /var/lib/grafana/plugins/* /tmp/plugins/ 
+RUN chmod 777 /tmp/plugins
 # List installed plugins for verification
-RUN ls -latr /plugins
+RUN ls -latr /tmp/plugins
 # VOLUME ['/plugins']
 # Switch back to grafana user
 USER grafana
