@@ -29,7 +29,7 @@ RUN chmod 777 /plugins
 # List installed plugins for verification
 RUN echo "Installed plugins:" && \
     grafana cli plugins ls
-
+RUN grafana cli plugins ls --pluginsDir "/plugins"
 # VOLUME ['/plugins']
 # Switch back to grafana user
 USER grafana
