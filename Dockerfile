@@ -25,7 +25,7 @@ RUN sed -i 's/\r//g' /tmp/plugins.txt && \
             echo "❌ Failed to install plugin: $plugin"; \
         fi; \
     done < /tmp/plugins-clean.txt
-RUN chown -R grafana:grafana /data/grafana/plugins 
+# RUN chown -R grafana:grafana /data/grafana/plugins 
 RUN chmod 777 /data/grafana/plugins
 # List installed plugins for verification
 RUN echo "Installed plugins:" && \
