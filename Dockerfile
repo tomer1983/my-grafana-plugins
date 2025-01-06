@@ -18,8 +18,9 @@ RUN sed -i 's/\r//g' /tmp/plugins.txt && \
     echo "Starting plugin installation..." && \
     while IFS= read -r plugin || [ -n "$plugin" ]; do \
         echo "Attempting to install plugin: $plugin" && \
-        if grafana cli --pluginsDir "/plugins" plugins install "$plugin"; then \
+        if grafana cli plugins install "$plugin"; then \
             echo "✅ Successfully installed plugin: $plugin"; \
+            mv /var/lib/grafana/plugins/* /plugins/ &&; \
         else \
             echo "❌ Failed to install plugin: $plugin"; \
         fi; \
@@ -27,9 +28,7 @@ RUN sed -i 's/\r//g' /tmp/plugins.txt && \
 # RUN chown -R grafana:grafana /data/grafana/plugins 
 RUN chmod 777 /plugins
 # List installed plugins for verification
-RUN echo "Installed plugins:" && \
-    grafana cli plugins ls
-RUN grafana cli plugins ls --pluginsDir "/plugins"
+RUN ls -latr /plugins
 # VOLUME ['/plugins']
 # Switch back to grafana user
 USER grafana
