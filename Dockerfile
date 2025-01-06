@@ -20,7 +20,7 @@ RUN sed -i 's/\r//g' /tmp/plugins.txt && \
         echo "Attempting to install plugin: $plugin" && \
         if grafana cli plugins install "$plugin"; then \
             echo "✅ Successfully installed plugin: $plugin"; \
-            mv /var/lib/grafana/plugins/* /plugins/ &&; \
+            mv /var/lib/grafana/plugins/* /plugins/; \
         else \
             echo "❌ Failed to install plugin: $plugin"; \
         fi; \
