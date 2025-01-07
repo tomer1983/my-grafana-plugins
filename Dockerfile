@@ -9,7 +9,7 @@ COPY plugins.txt /tmp/plugins.txt
 
 RUN mkdir -p /tmp/plugins 
 
-VOLUME ['/tmp/plugins ']
+VOLUME ['/tmp/plugins']
 # Clean up plugins.txt and install plugins
 RUN sed -i 's/\r//g' /tmp/plugins.txt && \
     grep -v '^#' /tmp/plugins.txt | \
