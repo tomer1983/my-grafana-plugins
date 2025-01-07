@@ -7,11 +7,9 @@ briangann-gauge-panel
 camptocamp-prometheus-alertmanager-datasource
 chaosmeshorg-datasource
 cloudspout-button-panel
-cloudwatch
 computest-cloudwatchalarm-datasource
 corpglory-progresslist-panel
 dalvany-image-panel
-devopsprodigy-kubegraf-app
 digiapulssi-breadcrumb-panel
 digiapulssi-organisations-panel
 digrich-bubblechart-panel
@@ -31,9 +29,7 @@ grafana-mongodb-datasource
 grafana-oncall-app
 grafana-opensearch-datasource
 grafana-polystat-panel
-grafana-postgresql-datasource
 grafana-pyroscope-app
-grafana-pyroscope-datasource
 grafana-resourcesexporter-app
 grafana-simple-json-datasource
 grafana-splunk-datasource
@@ -44,10 +40,8 @@ hamedkarbasi93-kafka-datasource
 hamedkarbasi93-nodegraphapi-datasource
 heywesty-trafficlight-panel
 integrationmatters-comparison-panel
-jaeger
 jdbranham-diagram-panel
 knightss27-weathermap-panel
-loki
 magnesium-wordcloud-panel
 marcusolsson-csv-datasource
 marcusolsson-dynamictext-panel
@@ -55,7 +49,6 @@ marcusolsson-hexmap-panel
 marcusolsson-json-datasource
 marcusolsson-treemap-panel
 mckn-funnel-panel
-mssql
 nagasudhirpulla-api-datasource
 netsage-sankey-panel
 nikosc-percenttrend-panel
@@ -66,9 +59,7 @@ redis-explorer-app
 serrrios-statusoverview-panel
 simpod-json-datasource
 snuids-trend-panel
-tempo
 timomyl-breadcrumb-panel
-victoriametrics-datasource
 volkovlabs-echarts-panel
 volkovlabs-form-panel
 volkovlabs-grapi-datasource
