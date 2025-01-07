@@ -3,7 +3,7 @@ name: Build and Push Grafana Image
 on:
   push:
     branches: 
-    - main
+    # - main
     - release/*
   # pull_request:
   #   branches: [ main ]
