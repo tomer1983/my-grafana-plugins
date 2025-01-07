@@ -28,12 +28,6 @@ redis-app
 redis-explorer-app
 camptocamp-prometheus-alertmanager-datasource
 yesoreyeram-infinity-datasource
-cloudwatch
-mssql
-loki
-jaeger
-grafana-pyroscope-datasource
-tempo
 grafana-splunk-monitoring-datasource
 chaosmeshorg-datasource
 grafana-gitlab-datasource
@@ -43,7 +37,6 @@ nagasudhirpulla-api-datasource
 hamedkarbasi93-kafka-datasource
 golioth-websocket-datasource
 volkovlabs-grapi-datasource
-grafana-postgresql-datasource
 grafana-github-datasource
 grafana-dynatrace-datasource
 grafana-jira-datasource
