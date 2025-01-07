@@ -1,4 +1,4 @@
-ARG GRAFANA_VERSION=11.4.0
+ARG GRAFANA_VERSION=10.2.2
 
 FROM grafana/grafana-enterprise:${GRAFANA_VERSION}
 
