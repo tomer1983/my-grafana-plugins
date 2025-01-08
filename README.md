@@ -1,6 +1,6 @@
 # Grafana Plugin Installer Docker Image
 
-This project provides a streamlined way to create a custom Grafana Docker image with pre-installed plugins from a user-defined list. It is designed to simplify the setup of Grafana environments, enabling faster deployments with all required plugins ready to use.
+This solution is particularly useful for **air-gapped environments** where internet access is restricted or unavailable. By pre-installing all required plugins during the image build process, you can ensure your Grafana instance is fully functional without needing external connectivity.
 
 ## Key Features
 - **Customizable Plugin Installation**: Specify desired Grafana plugins in a simple `plugins.txt` file.
