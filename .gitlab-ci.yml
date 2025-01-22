@@ -1,9 +1,0 @@
-default:
-  image: python:3.11-slim
-#   image: alpine:latest
-
-stages:
-   - download-grafana-images
-
-include:
-   - local: '.gitlab-ci/download-grafana-images.yaml'
